@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ff7e5f, #fe7b86);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            z-index: 2;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+    <title>Proverb Calendar</title>
+</head>
+<body>
+
+<table>
+    <thead>
+        <tr>
+            <th>Sun</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+        </tr>
+    </thead>
+    <tbody id="calendar-body"></tbody>
+</table>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="popup" id="popup">
+    <span class="close-btn" onclick="closePopup()">X</span>
+    <p id="proverb"></p>
+</div>
+
+<script>
+    const calendarBody = document.getElementById("calendar-body");
+    const overlay = document.getElementById("overlay");
+    const popup = document.getElementById("popup");
+    const proverbElement = document.getElementById("proverb");
+
+    // Replace this array with your proverbs
+    const proverbs = [
+        "Actions speak louder than words.",
+        "Where there's smoke, there's fire.",
+        "A picture is worth a thousand words.",
+        "Don't count your chickens before they're hatched.",
+        "Every cloud has a silver lining.",
+        // Add more proverbs as needed
+    ];
+
+    function generateCalendar() {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const daysInMonth = new Date(currentDate.getFullYear(), currentMonth + 1, 0).getDate();
+
+        let date = 1;
+        let output = "<tr>";
+
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayOfWeek = new Date(currentDate.getFullYear(), currentMonth, date).getDay();
+
+            if (i === 1) {
+                for (let j = 0; j < dayOfWeek; j++) {
+                    output += "<td></td>";
+                }
+            }
+
+            output += `<td onclick="showProverb(${i})">${i}</td>`;
+
+            if (dayOfWeek === 6) {
+                output += "</tr>";
+                if (i < daysInMonth) {
+                    output += "<tr>";
+                }
+            }
+
+            date++;
+        }
+
+        calendarBody.innerHTML = output;
+    }
+
+    function showProverb(day) {
+        const proverbIndex = day % proverbs.length;
+        const selectedProverb = proverbs[proverbIndex];
+        proverbElement.innerText = selectedProverb;
+        overlay.style.display = "block";
+        popup.style.display = "block";
+    }
+
+    function closePopup() {
+        overlay.style.display = "none";
+        popup.style.display = "none";
+    }
+
+    // Generate the calendar on page load
+    generateCalendar();
+</script>
+
+</body>
+</html>
